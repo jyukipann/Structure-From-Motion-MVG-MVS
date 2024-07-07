@@ -1,0 +1,16 @@
+version: '3'
+services:
+  openmvg:
+    build: openMVG
+    # build: docker_openmvg #自作イメージの場合
+    volumes:
+      - ./openMVG:/openMVG
+      - ./dataset:/dataset
+    tty: true
+  openmvs:
+    image: openmvs/openmvs-ubuntu:latest
+    # build: openMVS/docker #公式gitのdockerfile
+    # build: docker_openmvs #自作イメージの場合
+    volumes:
+      - ./dataset:/dataset
+    tty: true
