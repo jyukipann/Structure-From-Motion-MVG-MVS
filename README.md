@@ -40,7 +40,8 @@ MeshLabは[公式サイト](https://www.meshlab.net/)にて各プラットフォ
 - [Structure From Motion (SfM)を試す 〜 OpenMVG編 (Ubuntu 16.04) 〜](https://qiita.com/fujin/items/d816a7e9b8c2577a7e37)
 - [MeshLab](https://www.meshlab.net/)
 - [openMVG/wiki](https://github.com/openMVG/openMVG/wiki)
-- []()
+- [openMVG/wiki/OpenMVG-on-your-image-dataset](https://github.com/openMVG/openMVG/wiki/OpenMVG-on-your-image-dataset)
+- [openMVS/wiki/Usage](https://github.com/cdcseacave/openMVS/wiki/Usage#viewer-usage)
 
 
 ## 開発中のメモ
@@ -120,3 +121,53 @@ root@ad2dc9b95679:/openMVS_build/bin# /openMVS_build/bin/DensifyPointCloud /data
 謎のエラーで点群を密にできない。
 ["invalid project" error in docker image when trying to compute dense point cloud](https://github.com/cdcseacave/openMVS/issues/1056)
 と同じ問題のように思えるので、自前でビルドする。
+
+```bash
+VCPKG_ROOT=/vcglib cmake ..
+CMake Deprecation Warning at CMakeLists.txt:30 (cmake_policy):
+  The OLD behavior for policy CMP0011 will be removed from a future version
+  of CMake.
+
+  The cmake-policies(7) manual explains that the OLD behaviors of all
+  policies are deprecated and that a policy should be set to OLD only under
+  specific short-term circumstances.  Projects should be ported to the NEW
+  behavior and not rely on setting a policy to OLD.
+
+
+-- cotire 1.8.0 loaded.
+-- Detected version of GNU GCC: 74 (704)
+Compiling with C++14
+CUDA_TOOLKIT_ROOT_DIR not found or specified
+-- Could NOT find CUDA (missing: CUDA_TOOLKIT_ROOT_DIR CUDA_NVCC_EXECUTABLE CUDA_INCLUDE_DIRS CUDA_CUDART_LIBRARY) 
+-- Can't find CUDA. Continuing without it.
+-- WARNING: BREAKPAD was not found: Please specify BREAKPAD directory using BREAKPAD_ROOT env. variable
+-- Can't find BreakPad. Continuing without it.
+-- Boost version: 1.65.1
+-- Found the following Boost libraries:
+--   iostreams
+--   program_options
+--   system
+--   serialization
+--   regex
+-- Eigen 3.2.10 found (include: /usr/local/include/eigen3)
+-- OpenCV 3.2.0 found (include: /usr/include;/usr/include/opencv)
+-- CGAL 4.11 found (include: /usr//include)
+CMake Error at build/Utils.cmake:223 (message):
+  VCG required, but not found: Please specify VCG directory using VCG_ROOT
+  env.  variable
+Call Stack (most recent call first):
+  build/Modules/FindVCG.cmake:23 (package_report_not_found)
+  libs/MVS/CMakeLists.txt:9 (FIND_PACKAGE)
+
+
+-- Configuring incomplete, errors occurred!
+See also "/openMVS/make/CMakeFiles/CMakeOutput.log".
+```
+
+cmake できない
+
+```bash
+VCG_ROOT=/vcglib cmake ..
+cmake --build .
+```
+でバイナリーができた。
