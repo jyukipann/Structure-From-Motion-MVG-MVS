@@ -15,6 +15,8 @@ Dockerによる環境構築
 Dockerによる環境構築  
 `openmvs/openmvs-ubuntu:latest`があったためこれを用いる。
 
+`openmvs/openmvs-ubuntu:latest`では`openMVG_main_openMVG2openMVS`のバイナリが見当たらなかったため、`openMVS/docker/Dockerfile`をビルドすることにした。
+
 ## MeshLabについて
 MeshLabは[公式サイト](https://www.meshlab.net/)にて各プラットフォーム向けのビルドがダウンロードできるのでそれに従ってインストールをする。
 特にWindows環境ではMicrosoft Storeからインストールするのが妥当だろう。
@@ -50,6 +52,9 @@ dockerによる環境構築が終わったため実際にOpenMVGによる三次�
 ```bash
 cd /opt/openMVG_Build/software/SfM/
 python3 SfM_SequentialPipeline.py /dataset/ImageDataset_SceauxCastle-master/images/ /dataset/ImageDataset_SceauxCastle-master/test_reconstruct
+/opt/openMVG_Build/install/bin/openMVG_main_openMVG2openMVS -i /dataset/ImageDataset_SceauxCastle-master/test_reconstruct/reconstruction_sequential/sfm_data.bin -o /dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene.mvs -d /dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene_undistorted_images
+
+find /opt/openMVG_Build -iname openMVG_main_openMVG2openMVS
 ```
 
 手法的にカメラパラメータが必要である。実際にデータセットを見つけた。試しにiPhoneがあるかを調べた。
@@ -100,5 +105,18 @@ Prestigio MultiPhone 5550 Duo;4.54
 再構成結果である`/dataset/ImageDataset_SceauxCastle-master/test_reconstruct`を用いて、MVSを実行したい。
 
 ```bash
-openMVG_main_openMVG2openMVS -i dataset/ImageDataset_SceauxCastle-master/test_reconstruct/reconstruction_sequential/sfm_data.bin -o dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene.mvs -d dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene_undistorted_images
+/openMVS_build/bin/DensifyPointCloud /dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene.mvs
 ```
+```
+root@ad2dc9b95679:/openMVS_build/bin# /openMVS_build/bin/DensifyPointCloud /dataset/test/scene.mvs 
+06:39:48 [App     ] Build date: Dec 10 2019, 20:59:37
+06:39:48 [App     ] CPU: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz (16 cores)
+06:39:48 [App     ] RAM: 24.46GB Physical Memory 128.00GB Virtual Memory
+06:39:48 [App     ] OS: Linux 5.15.153.1-microsoft-standard-WSL2 (x86_64)
+06:39:48 [App     ] SSE & AVX compatible CPU & OS detected
+06:39:48 [App     ] Command line: /dataset/test/scene.mvs
+06:39:48 [App     ] error: invalid project
+```
+謎のエラーで点群を密にできない。
+["invalid project" error in docker image when trying to compute dense point cloud](https://github.com/cdcseacave/openMVS/issues/1056)
+と同じ問題のように思えるので、自前でビルドする。

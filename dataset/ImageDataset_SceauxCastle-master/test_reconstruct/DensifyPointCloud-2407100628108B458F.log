@@ -1,0 +1,7 @@
+06:28:10 [App     ] Build date: Dec 10 2019, 20:59:37
+06:28:10 [App     ] CPU: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz (16 cores)
+06:28:10 [App     ] RAM: 24.46GB Physical Memory 128.00GB Virtual Memory
+06:28:10 [App     ] OS: Linux 5.15.153.1-microsoft-standard-WSL2 (x86_64)
+06:28:10 [App     ] SSE & AVX compatible CPU & OS detected
+06:28:10 [App     ] Command line: scene.mvs
+06:28:10 [App     ] error: invalid project

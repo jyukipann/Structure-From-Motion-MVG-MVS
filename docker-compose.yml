@@ -8,8 +8,12 @@ services:
       - ./dataset:/dataset
     tty: true
   openmvs:
-    image: openmvs/openmvs-ubuntu:latest
-    # build: openMVS/docker #公式gitのdockerfile
+    image: openmvs/openmvs-ubuntu:latest # 公式イメージの場合 とりあえず、使うならこっち
+    # build: 
+    #   context: openMVS/docker #公式gitのdockerfile　ビルドに時間がかかる
+    #   args:
+    #   - MASTER=1
+    #   - CUDA=1 # MVSでCUDAを使用すると速くなる
     # build: docker_openmvs #自作イメージの場合
     volumes:
       - ./dataset:/dataset
