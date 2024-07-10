@@ -46,10 +46,10 @@ MeshLabは[公式サイト](https://www.meshlab.net/)にて各プラットフォ
 dockerによる環境構築が終わったため実際にOpenMVGによる三次元再構成を試す。
 [コマンドはここから取得](https://github.com/openMVG/openMVG/wiki/OpenMVG-on-your-image-dataset)
 
-OpenMVGのコンテナ内で実行
+#### OpenMVGのコンテナ内で実行
 ```bash
 cd /opt/openMVG_Build/software/SfM/
-python SfM_SequentialPipeline.py /dataset/ImageDataset_SceauxCastle-master/images/ /dataset/ImageDataset_SceauxCastle-master/test_reconstruct
+python3 SfM_SequentialPipeline.py /dataset/ImageDataset_SceauxCastle-master/images/ /dataset/ImageDataset_SceauxCastle-master/test_reconstruct
 ```
 
 手法的にカメラパラメータが必要である。実際にデータセットを見つけた。試しにiPhoneがあるかを調べた。
@@ -95,3 +95,10 @@ Prestigio MultiPhone 5550 Duo;4.54
 最新のiPhoneがデータとしてないことを確認した。
 
 自前のデータで再構成する場合はexifのカメラ名にあわせて、センサーサイズ的な情報を記載しなければ動かないと思われる。
+
+#### OpenMVSのコンテナ内で実行
+再構成結果である`/dataset/ImageDataset_SceauxCastle-master/test_reconstruct`を用いて、MVSを実行したい。
+
+```bash
+openMVG_main_openMVG2openMVS -i dataset/ImageDataset_SceauxCastle-master/test_reconstruct/reconstruction_sequential/sfm_data.bin -o dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene.mvs -d dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene_undistorted_images
+```
