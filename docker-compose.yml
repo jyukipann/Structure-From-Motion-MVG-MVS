@@ -14,3 +14,10 @@ services:
     volumes:
       - ./dataset:/dataset
     tty: true
+    deploy: # MVSでCUDAを使用すると速くなる
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
