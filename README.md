@@ -164,10 +164,35 @@ Call Stack (most recent call first):
 See also "/openMVS/make/CMakeFiles/CMakeOutput.log".
 ```
 
-cmake できない
+cmake できない。以下のように環境変数を追加したらできた。
 
 ```bash
 VCG_ROOT=/vcglib cmake ..
 cmake --build .
 ```
 でバイナリーができた。
+
+実行したが、結果は変わらず'error: invalid project'となった。
+```bash
+openMVS/make/bin/DensifyPointCloud /dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene.mvs
+02:23:59 [App     ] Build date: Jul 10 2024, 08:22:41
+02:23:59 [App     ] CPU: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz (16 cores)
+02:23:59 [App     ] RAM: 24.46GB Physical Memory 128.00GB Virtual Memory
+02:23:59 [App     ] OS: Linux 5.15.153.1-microsoft-standard-WSL2 (x86_64)
+02:23:59 [App     ] SSE & AVX compatible CPU & OS detected
+02:23:59 [App     ] Command line: /dataset/ImageDataset_SceauxCastle-master/test_reconstruct/scene.mvs
+02:23:59 [App     ] error: invalid project
+```
+
+### 20240724
+OpenMVSについて調査する。
+
+- [OpenMVGとOpenMVSのdockerを作る](https://zenn.dev/kenfuku/scraps/d5730e37444cbb)
+- [Build latest OpenMVG+OpenMVS+COLMAP in docker](https://gist.github.com/cdcseacave/ef290eacefa44db67dadaed01a6fe319)
+- []()
+
+
+[Build latest OpenMVG+OpenMVS+COLMAP in docker](https://gist.github.com/cdcseacave/ef290eacefa44db67dadaed01a6fe319)が見た感じ動きそうなので、試してみる。
+
+
+docker-compose-unified.ymlを作って構成を用意した。
