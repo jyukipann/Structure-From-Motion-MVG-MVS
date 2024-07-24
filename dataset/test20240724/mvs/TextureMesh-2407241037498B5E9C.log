@@ -1,0 +1,23 @@
+10:37:49 [App     ] OpenMVS x64 v2.3.0
+10:37:49 [App     ] Build date: Jul 24 2024, 10:23:18
+10:37:49 [App     ] CPU: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz (16 cores)
+10:37:49 [App     ] RAM: 24.46GB Physical Memory 128.00GB Virtual Memory
+10:37:49 [App     ] OS: Linux 5.15.153.1-microsoft-standard-WSL2 (x86_64)
+10:37:49 [App     ] Disk: 31.96GB (930.42GB) space
+10:37:49 [App     ] SSE & AVX compatible CPU & OS detected
+10:37:49 [App     ] Command line: TextureMesh scene_dense.mvs -m scene_dense_mesh_refine.ply --decimate 0.5 -w "/dataset/test20240724/mvs"
+10:37:49 [App     ] Camera model loaded: platform 0; camera  0; f 1.056x1.056; poses 11
+10:37:49 [App     ] Scene loaded from interface format (7ms):
+	11 images (11 calibrated) with a total of 15.81 MPixels (1.44 MPixels/image)
+	6048 points, 0 vertices, 0 faces
+10:37:49 [App     ] Mesh loaded: 473517 vertices, 945486 faces (146ms)
+10:37:55 [App     ] Cleaned mesh: 237146 vertices, 472736 faces (5s891ms)
+10:37:55 [App     ] Cleaned mesh: 237144 vertices, 472736 faces (690ms)
+10:38:14 [App     ] Assigning the best view to each face completed: 472736 faces (18s865ms)
+10:38:21 [App     ] Generating texture atlas and image completed: 2004 patches, 4096 image size, 1 textures (6s754ms)
+10:38:21 [App     ] Mesh texturing completed: 237144 vertices, 472736 faces (25s647ms)
+10:38:24 [App     ] Mesh saved: 237144 vertices, 472736 faces (3s380ms)
+10:38:24 [App     ] MEMORYINFO: {
+10:38:24 [App     ] 	VmPeak:	 5447776 kB
+10:38:24 [App     ] 	VmSize:	 3470108 kB
+10:38:24 [App     ] } ENDINFO
