@@ -215,3 +215,109 @@ python3 /openMVS/scripts/python/MvgMvsPipeline.py /dataset/ImageDataset_SceauxCa
 ------
 failed to solve: process "/bin/sh -c git clone https://github.com/colmap/colmap.git --branch dev" did not complete successfully: exit code: 128
 ```
+
+ブランチの指定をやめることで、クローンできた。
+ビルドはできなかったため、ビルド直前のコンテナに入って、ビルドコマンドを手打ちして結果をみることにした。
+
+```bash
+cd /comap_build
+cmake . ../colmap -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="/opt"
+make -j4 && make install
+```
+cmake でエラーログができた。
+```
+root@338e1da66554:/comap_build# cmake . ../colmap -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="/opt"
+-- Enabling LSD support
+-- Found FreeImage
+--   Includes : /usr/include
+--   Libraries : /usr/lib/x86_64-linux-gnu/libfreeimage.so
+CMake Error at cmake/FindFLANN.cmake:89 (message):
+  Could not find FLANN
+Call Stack (most recent call first):
+  cmake/FindDependencies.cmake:17 (find_package)
+  CMakeLists.txt:105 (include)
+
+
+-- Configuring incomplete, errors occurred!
+See also "/comap_build/CMakeFiles/CMakeOutput.log".
+```
+
+これの追加でビルド成功した。
+```bash
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+  libflann-dev \
+  libsqlite3-dev \
+  libmetis-dev
+```
+
+次はOpenMVGのビルドで躓いた。
+```bash
+cd openMVG_build
+cmake -DCMAKE_BUILD_TYPE=RELEASE \
+    -DCMAKE_INSTALL_PREFIX="/opt" \
+    -DOpenMVG_BUILD_TESTS=OFF \
+    -DOpenMVG_BUILD_EXAMPLES=OFF \
+    -DOpenMVG_BUILD_DOC=OFF \
+    -DOpenMVG_BUILD_OPENGL_EXAMPLES=ON \
+    -DOpenMVG_USE_OPENCV=ON \
+    -DOpenMVG_USE_OCVSIFT=OFF \
+    -DCOINUTILS_INCLUDE_DIR_HINTS=/usr/include \
+    -DCLP_INCLUDE_DIR_HINTS=/usr/include \
+    -DOSI_INCLUDE_DIR_HINTS=/usr/include \
+    -DEIGEN_INCLUDE_DIR_HINTS=/usr/include/eigen3 \
+    ../openMVG/src
+```
+
+Eigenを利用しているようだったが、Dockerfile上ではインストール順が前後していたため入れ替えた。また、バージョンも3.4のほうが良いよいという報告（[recipe for target 'all' failed](https://github.com/openMVG/openMVG/issues/2143)）があったので、先に変えておいた。
+
+`-DEIGEN_INCLUDE_DIR_HINTS=/usr/include/eigen3`を
+`-DEIGEN_INCLUDE_DIR_HINTS=/usr/local/include/eigen34/include/eigen3/`に
+変更した。
+
+```bash
+cmake -DCMAKE_BUILD_TYPE=RELEASE \
+    -DCMAKE_INSTALL_PREFIX="/opt" \
+    -DOpenMVG_BUILD_TESTS=OFF \
+    -DOpenMVG_BUILD_EXAMPLES=OFF \
+    -DOpenMVG_BUILD_DOC=OFF \
+    -DOpenMVG_BUILD_OPENGL_EXAMPLES=ON \
+    -DOpenMVG_USE_OPENCV=ON \
+    -DOpenMVG_USE_OCVSIFT=OFF \
+    -DCOINUTILS_INCLUDE_DIR_HINTS=/usr/include \
+    -DCLP_INCLUDE_DIR_HINTS=/usr/include \
+    -DOSI_INCLUDE_DIR_HINTS=/usr/include \
+    -DEIGEN_INCLUDE_DIR_HINTS=/usr/local/include/eigen34/include/eigen3/ \
+    -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen34/include/eigen3 \
+    ../openMVG/src
+make -j4 && make install
+```
+
+```Dockerfile
+RUN cd openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE \
+    -DCMAKE_INSTALL_PREFIX="/opt" \
+    -DOpenMVG_BUILD_TESTS=OFF \
+    -DOpenMVG_BUILD_EXAMPLES=OFF \
+    -DOpenMVG_BUILD_DOC=OFF \
+    -DOpenMVG_BUILD_OPENGL_EXAMPLES=ON \
+    -DOpenMVG_USE_OPENCV=ON \
+    -DOpenMVG_USE_OCVSIFT=OFF \
+    -DCOINUTILS_INCLUDE_DIR_HINTS=/usr/include \
+    -DCLP_INCLUDE_DIR_HINTS=/usr/include \
+    -DOSI_INCLUDE_DIR_HINTS=/usr/include \
+    -DEIGEN_INCLUDE_DIR_HINTS=/usr/include/eigen3 \
+    ../openMVG/src && \
+    make -j 4 && make install && \
+    cp ../openMVG/src/openMVG/exif/sensor_width_database/sensor_width_camera_database.txt /opt/bin/
+
+
+
+RUN cd openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=Release \
+    -DVCG_ROOT=/vcglib \
+    -DCMAKE_TOOLCHAIN_FILE=/vcglib/scripts/buildsystems/vcpkg.cmake \
+    -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen34/include/eigen3 \
+    -DCMAKE_INSTALL_PREFIX="/opt" && \
+    make -j4 && make install && \
+    cp ../openMVS/MvgMvsPipeline.py /opt/bin/
+```
+
+あとはこの２レイヤーを動かせばいいだけ。
