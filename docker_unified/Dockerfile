@@ -44,7 +44,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
   libqt5opengl5-dev
   
 # Build latest COLMAP
-RUN git clone https://github.com/colmap/colmap.git --branch dev
+RUN git clone https://github.com/colmap/colmap.git
 RUN mkdir comap_build
 RUN cd comap_build && cmake . ../colmap -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="/opt" && \
