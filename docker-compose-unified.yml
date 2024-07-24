@@ -2,7 +2,7 @@ version: '3'
 services:
   unified:
     build: 
-      context: docker_unified #公式gitのdockerfile　ビルドに時間がかかる
+      context: docker_unified
     volumes:
       - ./dataset:/dataset
     tty: true

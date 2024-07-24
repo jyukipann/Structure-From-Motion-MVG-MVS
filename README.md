@@ -196,3 +196,22 @@ OpenMVSについて調査する。
 
 
 docker-compose-unified.ymlを作って構成を用意した。
+
+ビルド後のファイルが削除されているように見えたのでその処理を消した。
+
+```bash
+python3 /openMVS/scripts/python/MvgMvsPipeline.py /dataset/ImageDataset_SceauxCastle-master/images /dataset/test20240724
+```
+動かない。
+
+また、githubに書いてあることとdockercompose後の中身が一致しないため、一行にまとまっていたコマンドを分割して、複数のLayerに分けて実行してみたところ、git cloneでエラーがでていた。
+
+```
+ => ERROR [unified  7/23] RUN git clone https://github.com/colmap/colmap.git --branch dev                                                                                                                                         2.5s 
+------
+ > [unified  7/23] RUN git clone https://github.com/colmap/colmap.git --branch dev:
+1.205 Cloning into 'colmap'...
+1.797 fatal: Remote branch dev not found in upstream origin
+------
+failed to solve: process "/bin/sh -c git clone https://github.com/colmap/colmap.git --branch dev" did not complete successfully: exit code: 128
+```
