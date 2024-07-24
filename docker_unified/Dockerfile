@@ -46,58 +46,58 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
 # Build latest COLMAP
 RUN git clone https://github.com/colmap/colmap.git
 RUN mkdir comap_build
-RUN cd comap_build && cmake . ../colmap -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="/opt" && \
-    make -j4 && make install
+# RUN cd comap_build && cmake . ../colmap -DCMAKE_BUILD_TYPE=Release \
+#     -DCMAKE_INSTALL_PREFIX="/opt" && \
+#     make -j4 && make install
 
-# OpenCV
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq libopencv-dev
+# # OpenCV
+# RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq libopencv-dev
 
-# Build latest openvMVG
-RUN git clone --recursive https://github.com/openMVG/openMVG.git --branch develop
-RUN mkdir openMVG_build
-RUN cd openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE \
-    -DCMAKE_INSTALL_PREFIX="/opt" \
-    -DOpenMVG_BUILD_TESTS=OFF \
-    -DOpenMVG_BUILD_EXAMPLES=OFF \
-    -DOpenMVG_BUILD_DOC=OFF \
-    -DOpenMVG_BUILD_OPENGL_EXAMPLES=ON \
-    -DOpenMVG_USE_OPENCV=ON \
-    -DOpenMVG_USE_OCVSIFT=OFF \
-    -DCOINUTILS_INCLUDE_DIR_HINTS=/usr/include \
-    -DCLP_INCLUDE_DIR_HINTS=/usr/include \
-    -DOSI_INCLUDE_DIR_HINTS=/usr/include \
-    -DEIGEN_INCLUDE_DIR_HINTS=/usr/include/eigen3 \
-    ../openMVG/src && \
-    make -j 4 && make install && \
-    cp ../openMVG/src/openMVG/exif/sensor_width_database/sensor_width_camera_database.txt /opt/bin/
+# # Build latest openvMVG
+# RUN git clone --recursive https://github.com/openMVG/openMVG.git --branch develop
+# RUN mkdir openMVG_build
+# RUN cd openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE \
+#     -DCMAKE_INSTALL_PREFIX="/opt" \
+#     -DOpenMVG_BUILD_TESTS=OFF \
+#     -DOpenMVG_BUILD_EXAMPLES=OFF \
+#     -DOpenMVG_BUILD_DOC=OFF \
+#     -DOpenMVG_BUILD_OPENGL_EXAMPLES=ON \
+#     -DOpenMVG_USE_OPENCV=ON \
+#     -DOpenMVG_USE_OCVSIFT=OFF \
+#     -DCOINUTILS_INCLUDE_DIR_HINTS=/usr/include \
+#     -DCLP_INCLUDE_DIR_HINTS=/usr/include \
+#     -DOSI_INCLUDE_DIR_HINTS=/usr/include \
+#     -DEIGEN_INCLUDE_DIR_HINTS=/usr/include/eigen3 \
+#     ../openMVG/src && \
+#     make -j 4 && make install && \
+#     cp ../openMVG/src/openMVG/exif/sensor_width_database/sensor_width_camera_database.txt /opt/bin/
 
-# Eigen (Known issues with eigen 3.3.7 as of 12/10/2019, so using this tested branch/commit instead) 
-RUN git clone https://gitlab.com/libeigen/eigen --branch 3.2
-RUN mkdir eigen_build
-RUN cd eigen_build && \
-    cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="/usr/local/include/eigen32" . ../eigen && \
-    make && make install
+# # Eigen (Known issues with eigen 3.3.7 as of 12/10/2019, so using this tested branch/commit instead) 
+# RUN git clone https://gitlab.com/libeigen/eigen --branch 3.2
+# RUN mkdir eigen_build
+# RUN cd eigen_build && \
+#     cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="/usr/local/include/eigen32" . ../eigen && \
+#     make && make install
 
-# VCGLib
-RUN git clone https://github.com/cdcseacave/VCG.git vcglib
+# # VCGLib
+# RUN git clone https://github.com/cdcseacave/VCG.git vcglib
 
-# Build latest openMVS
-RUN git clone https://github.com/cdcseacave/openMVS.git --branch develop
-RUN mkdir openMVS_build
-RUN cd openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=Release \
-    -DVCG_ROOT=/vcglib \
-    -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen32/include/eigen3 \
-    -DCMAKE_INSTALL_PREFIX="/opt" && \
-    make -j4 && make install && \
-    cp ../openMVS/MvgMvsPipeline.py /opt/bin/
+# # Build latest openMVS
+# RUN git clone https://github.com/cdcseacave/openMVS.git --branch develop
+# RUN mkdir openMVS_build
+# RUN cd openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=Release \
+#     -DVCG_ROOT=/vcglib \
+#     -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen32/include/eigen3 \
+#     -DCMAKE_INSTALL_PREFIX="/opt" && \
+#     make -j4 && make install && \
+#     cp ../openMVS/MvgMvsPipeline.py /opt/bin/
 
-# Install cmvs-pmvs
-RUN git clone https://github.com/pmoulon/CMVS-PMVS cmvs-pmvs
-RUN mkdir cmvs_pmvs_build
-RUN cd cmvs_pmvs_build && \
-  cmake ../cmvs-pmvs/program -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt && \
-  make -j4 && make install
+# # Install cmvs-pmvs
+# RUN git clone https://github.com/pmoulon/CMVS-PMVS cmvs-pmvs
+# RUN mkdir cmvs_pmvs_build
+# RUN cd cmvs_pmvs_build && \
+#   cmake ../cmvs-pmvs/program -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt && \
+#   make -j4 && make install
 
-# Add binaries to path
-ENV PATH $PATH:/opt/bin:/opt/bin/OpenMVS
+# # Add binaries to path
+# ENV PATH $PATH:/opt/bin:/opt/bin/OpenMVS
