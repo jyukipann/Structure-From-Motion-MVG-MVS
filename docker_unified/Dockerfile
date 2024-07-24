@@ -49,7 +49,7 @@ RUN git clone https://github.com/colmap/colmap.git --branch dev; \
   cmake . ../colmap -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="/opt"; \
   make -j4 && make install; \
-  cd .. && rm -rf comap_build
+  cd ..
 
 # OpenCV
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq libopencv-dev
@@ -72,14 +72,14 @@ RUN git clone --recursive https://github.com/openMVG/openMVG.git --branch develo
     ../openMVG/src; \
   make -j 4 && make install; \
   cp ../openMVG/src/openMVG/exif/sensor_width_database/sensor_width_camera_database.txt /opt/bin/; \
-  cd .. && rm -rf openMVG_build
+  cd ..
 
 # Eigen (Known issues with eigen 3.3.7 as of 12/10/2019, so using this tested branch/commit instead) 
 RUN git clone https://gitlab.com/libeigen/eigen --branch 3.2; \
   mkdir eigen_build && cd eigen_build; \
   cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="/usr/local/include/eigen32" . ../eigen; \
   make && make install; \
-  cd .. && rm -rf eigen_build
+  cd ..
 
 # VCGLib
 RUN git clone https://github.com/cdcseacave/VCG.git vcglib
@@ -93,14 +93,14 @@ RUN git clone https://github.com/cdcseacave/openMVS.git --branch develop; \
     -DCMAKE_INSTALL_PREFIX="/opt"; \
   make -j4 && make install; \
   cp ../openMVS/MvgMvsPipeline.py /opt/bin/; \
-  cd .. && rm -rf openMVS_build
+  cd ..
 
 # Install cmvs-pmvs
 RUN git clone https://github.com/pmoulon/CMVS-PMVS cmvs-pmvs; \
   mkdir cmvs_pmvs_build && cd cmvs_pmvs_build; \
   cmake ../cmvs-pmvs/program -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt; \
   make -j4 && make install; \
-  cd .. && rm -rf cmvs_pmvs_build
+  cd ..
 
 # Add binaries to path
 ENV PATH $PATH:/opt/bin:/opt/bin/OpenMVS
