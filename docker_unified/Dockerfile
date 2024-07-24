@@ -1,7 +1,11 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
+
 
 # Get dependencies
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y g++-12 gcc-12
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
   cmake \
   build-essential \
   graphviz \
@@ -65,7 +69,7 @@ RUN cd eigen_build && \
     cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="/usr/local/include/eigen34" . ../eigen && \
     make && make install
 
-RUN ln -s /usr/local/include/eigen34/include/eigen3/ /usr/include/eigen3
+RUN ln -s /usr/local/include/eigen34/include/eigen3 /usr/include/eigen3
 
 # # Build latest openvMVG
 RUN git clone --recursive https://github.com/openMVG/openMVG.git --branch develop
@@ -88,30 +92,31 @@ RUN cd cmvs_pmvs_build && \
   cmake ../cmvs-pmvs/program -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt && \
   make -j4 && make install
 
-# RUN cd openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE \
-#     -DCMAKE_INSTALL_PREFIX="/opt" \
-#     -DOpenMVG_BUILD_TESTS=OFF \
-#     -DOpenMVG_BUILD_EXAMPLES=OFF \
-#     -DOpenMVG_BUILD_DOC=OFF \
-#     -DOpenMVG_BUILD_OPENGL_EXAMPLES=ON \
-#     -DOpenMVG_USE_OPENCV=ON \
-#     -DOpenMVG_USE_OCVSIFT=OFF \
-#     -DCOINUTILS_INCLUDE_DIR_HINTS=/usr/include \
-#     -DCLP_INCLUDE_DIR_HINTS=/usr/include \
-#     -DOSI_INCLUDE_DIR_HINTS=/usr/include \
-#     -DEIGEN_INCLUDE_DIR_HINTS=/usr/include/eigen3 \
-#     ../openMVG/src && \
-#     make -j 4 && make install && \
-#     cp ../openMVG/src/openMVG/exif/sensor_width_database/sensor_width_camera_database.txt /opt/bin/
+RUN cd /openMVG_build && cmake \
+  -DCMAKE_BUILD_TYPE=RELEASE \
+  -DCMAKE_INSTALL_PREFIX="/opt" \
+  -DOpenMVG_BUILD_TESTS=OFF \
+  -DOpenMVG_BUILD_EXAMPLES=OFF \
+  -DOpenMVG_BUILD_DOC=OFF \
+  -DOpenMVG_BUILD_OPENGL_EXAMPLES=ON \
+  -DOpenMVG_USE_OPENCV=ON \
+  -DOpenMVG_USE_OCVSIFT=OFF \
+  -DCOINUTILS_INCLUDE_DIR_HINTS=/usr/include \
+  -DCLP_INCLUDE_DIR_HINTS=/usr/include \
+  -DOSI_INCLUDE_DIR_HINTS=/usr/include \
+  ../openMVG/src && \
+  make -j 4 && make install && \
+  cp ../openMVG/src/openMVG/exif/sensor_width_database/sensor_width_camera_database.txt /opt/bin/
 
 
-# RUN cd openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=Release \
-#     -DVCG_ROOT=/vcglib \
-#     -DCMAKE_TOOLCHAIN_FILE=/vcglib/scripts/buildsystems/vcpkg.cmake \
-#     -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen34/include/eigen3 \
-#     -DCMAKE_INSTALL_PREFIX="/opt" && \
-#     make -j4 && make install && \
-#     cp ../openMVS/MvgMvsPipeline.py /opt/bin/
+RUN cd /openMVS_build && cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DVCG_ROOT=/vcglib \
+  -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen34/include/eigen3 \
+  -DCMAKE_INSTALL_PREFIX="/opt" \
+  ../openMVS && \
+  make -j4 && make install && \
+  cp /openMVS/scripts/python/MvgMvsPipeline.py /opt/bin/
 
 # Add binaries to path
 ENV PATH $PATH:/opt/bin:/opt/bin/OpenMVS

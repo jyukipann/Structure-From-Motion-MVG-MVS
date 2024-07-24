@@ -293,7 +293,8 @@ make -j4 && make install
 ```
 
 ```Dockerfile
-RUN cd openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE \
+RUN cd /openMVG_build && cmake \
+    -DCMAKE_BUILD_TYPE=RELEASE \
     -DCMAKE_INSTALL_PREFIX="/opt" \
     -DOpenMVG_BUILD_TESTS=OFF \
     -DOpenMVG_BUILD_EXAMPLES=OFF \
@@ -304,20 +305,54 @@ RUN cd openMVG_build && cmake -DCMAKE_BUILD_TYPE=RELEASE \
     -DCOINUTILS_INCLUDE_DIR_HINTS=/usr/include \
     -DCLP_INCLUDE_DIR_HINTS=/usr/include \
     -DOSI_INCLUDE_DIR_HINTS=/usr/include \
-    -DEIGEN_INCLUDE_DIR_HINTS=/usr/include/eigen3 \
     ../openMVG/src && \
     make -j 4 && make install && \
     cp ../openMVG/src/openMVG/exif/sensor_width_database/sensor_width_camera_database.txt /opt/bin/
 
-
-
-RUN cd openMVS_build && cmake . ../openMVS -DCMAKE_BUILD_TYPE=Release \
+RUN cd /openMVS_build && cmake \
+    -DCMAKE_BUILD_TYPE=Release \
     -DVCG_ROOT=/vcglib \
     -DCMAKE_TOOLCHAIN_FILE=/vcglib/scripts/buildsystems/vcpkg.cmake \
     -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen34/include/eigen3 \
-    -DCMAKE_INSTALL_PREFIX="/opt" && \
+    -DCMAKE_INSTALL_PREFIX="/opt" \
+    ../openMVS && \
+    make -j4 && make install && \
+    cp ../openMVS/MvgMvsPipeline.py /opt/bin/
+
+RUN cd /openMVS_build && cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DVCG_ROOT=/vcglib \
+    -DEIGEN3_INCLUDE_DIR=/usr/local/include/eigen34/include/eigen3 \
+    -DCMAKE_INSTALL_PREFIX="/opt" \
+    ../openMVS && \
     make -j4 && make install && \
     cp ../openMVS/MvgMvsPipeline.py /opt/bin/
 ```
 
 あとはこの２レイヤーを動かせばいいだけ。
+
+
+
+`pkg-config --modversion eigen3`
+
+eigen3の古いもの（3.3.7）が使われているためエラーが出ると考えた。3.4をインストールしているのに3.3.4が使われていた。
+`rm -rf /usr/lib/cmake/eigen3/`で削除した。
+`ln -s /usr/local/include/eigen34/include/eigen3 /usr/lib/cmake/eigen3`をしてみた。
+中身の構成が違うため、動かなかった。
+```
+root@f98f46d96fbf:/openMVG_build# ls /usr/lib/cmake/eigen3
+Eigen3Config.cmake  Eigen3ConfigVersion.cmake  Eigen3Targets.cmake  UseEigen3.cmake
+
+root@f98f46d96fbf:/openMVG_build# ls 
+include  share
+
+root@f98f46d96fbf:/openMVG_build# ls /usr/local/include/eigen34/include/eigen3
+Eigen  signature_of_eigen3_matrix_library  unsupported
+
+root@f98f46d96fbf:/openMVG_build# ls /usr/include/eigen3/
+Eigen  eigen3  signature_of_eigen3_matrix_library  unsupported
+```
+
+
+[WWWサイトから、Stable Release (2022/10/17現在、version 3.4.0) のファイルを取ってきて、 インストールするのは簡単である。](http://nalab.mind.meiji.ac.jp/~mk/labo/text/nantoka-c++/node13.html)
+
